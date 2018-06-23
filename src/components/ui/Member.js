@@ -3,14 +3,13 @@ import React, { Component } from 'react';
 
 class Member extends Component {
 	render() {
-		const { name, thumbnail, email } = this.props;
+		const { name, thumbnail, email, admin, makeAdmin } = this.props;
     return (
         <div className="member">
-        	<h1>{ name }</h1>
+        	<h1>{ name } { admin ? <FaShield /> : null }</h1>
+					<a onClick={ makeAdmin }>Make ADMIN</a>
 					<img src={ thumbnail } alt="profile-picture" />
-					<p>
-						<a href={ `mailto:${email}` }>{ email }</a>
-					</p>
+					<p><a href={ `mailto:${email}` }>{ email }</a></p>
         </div>
     );
 	}

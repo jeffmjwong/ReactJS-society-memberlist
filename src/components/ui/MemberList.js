@@ -6,36 +6,50 @@ class MemberList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            members: [
-            {
-                name: "Joe Wilson",
-                email: "joe.wilson@example.com",
-                thumbnail: "https://randomuser.me/api/portraits/men/53.jpg"
-            },
-            {
-                name: "Stacy Gardner",
-                email: "stacy.gardner@example.com",
-                thumbnail: "https://randomuser.me/api/portraits/women/74.jpg"
-            },
-            {
-                name: "Billy Young",
-                email: "billy.young@example.com",
-                thumbnail: "https://randomuser.me/api/portraits/men/34.jpg"
-            }
-          ]
-        }
+            members: [],
+            loading: false,
+            administrators: []
+        };
+    }
+
+    componentWillMount() {
+      this.style = {
+        backgroundColor: 'skyblue'
+      };
+    }
+
+    componentDidMount() {
+      this.setState({ loading: true });
+      fetch('https://api.randomuser.me/?results=12')
+        .then(response => response.json())
+        .then(json => json.results)
+        .then(members => {
+          console.log(members);
+          this.setState({
+            members,
+            loading: false
+          });
+        })
+        .catch(console.error);
     }
 
     render() {
-        const { members } = this.state;
+        const { members, loading } = this.state;
         return (
-            <div className="member-list">
+            <div className="member-list" style={ this.style }>
             	<h1>Society Members</h1>
-              { members.map((member, index) => {
-                return (
-                  <Member key={ index } { ...member } />
-                );
-              }) }
+              { loading ? <h1>Loading...</h1> : <h1>{ members.length } members</h1> }
+              { members.length ?
+                  members.map((member, index) => {
+                  return (
+                    <Member
+                      key={ index }
+                      name={ member.name.title + ' ' + member.name.first + ' ' + member.name.last }
+                      email={ member.email }
+                      thumbnail={ member.picture.large } />
+                  )}) :
+                  <p>Currently 0 Members</p>
+              }
             </div>
         )
    }
