@@ -2,12 +2,26 @@ import FaShield from 'react-icons/lib/fa/shield'
 import React, { Component } from 'react';
 
 class Member extends Component {
+	componentWillUpdate(nextProps) {
+		this.style = {
+			backgroundColor: (nextProps.admin) ? 'green' : 'purple'
+		};
+	}
+
+	shouldComponentUpdate(nextProps) {
+		return this.props.admin !== nextProps.admin;
+	}
+
 	render() {
-		const { name, thumbnail, email, admin, makeAdmin } = this.props;
+		const { name, thumbnail, email, admin, makeAdmin, removeAdmin } = this.props;
     return (
-        <div className="member">
+        <div className="member" style={ this.style }>
         	<h1>{ name } { admin ? <FaShield /> : null }</h1>
-					<a onClick={ makeAdmin }>Make ADMIN</a>
+					{
+						admin ?
+							<a onClick={ () => removeAdmin(email) }>Remove ADMIN</a> :
+							<a onClick={ () => makeAdmin(email) }>Make ADMIN</a>
+					}
 					<img src={ thumbnail } alt="profile-picture" />
 					<p><a href={ `mailto:${email}` }>{ email }</a></p>
         </div>

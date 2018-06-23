@@ -10,6 +10,8 @@ class MemberList extends Component {
             loading: false,
             administrators: []
         };
+        this.makeAdmin = this.makeAdmin.bind(this);
+        this.removeAdmin = this.removeAdmin.bind(this);
     }
 
     componentWillMount() {
@@ -33,8 +35,22 @@ class MemberList extends Component {
         .catch(console.error);
     }
 
+    makeAdmin(email) {
+      const administrators = [...this.state.administrators, email];
+      this.setState({
+        administrators
+      });
+    }
+
+    removeAdmin(email) {
+      const administrators = this.state.administrators.filter(adminEmail => adminEmail !== email);
+      this.setState({
+        administrators
+      });
+    }
+
     render() {
-        const { members, loading } = this.state;
+        const { members, loading, administrators } = this.state;
         return (
             <div className="member-list" style={ this.style }>
             	<h1>Society Members</h1>
@@ -46,7 +62,10 @@ class MemberList extends Component {
                       key={ index }
                       name={ member.name.title + ' ' + member.name.first + ' ' + member.name.last }
                       email={ member.email }
-                      thumbnail={ member.picture.large } />
+                      thumbnail={ member.picture.large }
+                      admin={ this.state.administrators.includes(member.email) }
+                      makeAdmin={ this.makeAdmin }
+                      removeAdmin={ this.removeAdmin } />
                   )}) :
                   <p>Currently 0 Members</p>
               }
